@@ -6,6 +6,7 @@
     "@capacitor/android": "^2.4.2",
     "@capacitor/core": "2.4.2",
     "@ionic-native/firebase-authentication": "^5.28.0",
+    "@ionic-native/splash-screen": "^5.28.0",
     "@ionic/react": "^5.0.7",
     "@ionic/react-router": "^5.0.7",
     "@testing-library/jest-dom": "^4.2.4",

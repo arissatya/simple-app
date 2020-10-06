@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom'
 import { IonPage, IonHeader, IonContent, IonToolbar, IonTitle, IonAlert, IonGrid, IonLabel, IonRow, IonCol, IonItem, IonInput, IonButton, IonIcon } from '@ionic/react';
 import { enterOutline, personAdd } from "ionicons/icons"
 import { loginUser, registerUser } from '../config/firebase'
 import LoginRegister from '../components/LoginRegister'
+import './LoginPageStyle.css'
 
 const LoginPage: React.FC = () => {
+  const history = useHistory()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState(false)
   const [userType, setUserType] = useState<'login' | 'register'>('login')
 
@@ -14,18 +18,24 @@ const LoginPage: React.FC = () => {
     const res = await loginUser(email, password)
     console.log(`${res ? 'login success' : 'login failed'}`)
     if (!res) { setError(true) }
+    else {history.push('/home')}
   }
 
   const register = async () => {
-    const res = await registerUser(email, password)
-    console.log(`${res ? 'login success' : 'login failed'}`)
-    if (!res) { setError(true) }
+    if (password === confirmPassword) {
+      const res = await registerUser(email, password)
+      console.log(`${res ? 'login success' : 'login failed'}`)
+      if (!res) { setError(true) }
+    } else {
+      setError(true)
+    }
   }
 
   const clearError = () => {
     setError(false)
     setEmail('')
     setPassword('')
+    setConfirmPassword('')
   }
 
   const userInputTypeHandler = (type: 'login' | 'register') => {
@@ -34,7 +44,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <React.Fragment>
-      <IonAlert isOpen={!!error} message="check email or password" buttons={[{ text: "okay", handler: clearError }]} />
+      <IonAlert isOpen={!!error} message="check input email or password" buttons={[{ text: "okay", handler: clearError }]} />
       <IonPage>
         <IonHeader>
           <IonToolbar>
@@ -87,6 +97,24 @@ const LoginPage: React.FC = () => {
                 </IonItem>
               </IonCol>
             </IonRow>
+            {
+              userType === 'register' &&
+              <IonRow>
+                <IonCol>
+                  <IonItem>
+                    <IonLabel position="floating">confirm password</IonLabel>
+                    <IonInput
+                      pattern="password"
+                      type="password"
+                      value={confirmPassword}
+                      onIonChange={(e) => setConfirmPassword((e.target as HTMLInputElement).value)}
+                      id="resetEmail"
+                      required
+                    ></IonInput>
+                  </IonItem>
+                </IonCol>
+              </IonRow>
+            }
             {
               userType === 'login' &&
               <IonRow>
